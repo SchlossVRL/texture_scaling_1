@@ -119,8 +119,13 @@
     // Main task trials
     var trials = randomized_stimuli.map(stimulus => {
         return {
-            type: jsPsychImageKeyboardResponse,
-            stimulus: stimulus,
+            type: jsPsychHtmlKeyboardResponse,
+            //stimulus: stimulus,
+            stimulus: `
+            <div style="text-align: center;">
+                <object type="image/svg+xml" data="${stimulus}" style="height:300px;"></object>
+            </div>
+        `,
             choices: ['ArrowLeft', 'ArrowRight'],
             prompt: "<p>Press the left or right arrow key.</p>",
             data: {
