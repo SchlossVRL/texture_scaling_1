@@ -116,6 +116,35 @@
         images: randomized_stimuli
     });
 
+    var instructions = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: `<div style="text-align: center;">
+            <p style="font-size: 24px; margin-bottom: 1px; line-height: .1;"> During this experiment you will be presented with a series of textures. </p>
+            <p style="font-size: 24px; margin-bottom: 1px; line-height: .1;"> There will be one texture at the top (labeled 'reference' texture here) </p>
+            <p style="font-size: 24px; margin-bottom: 1px; line-height: .1;"> and two textures below (labeled 'left' texture and 'right' texture here). </p>
+            <p style="font-size: 24px; margin-bottom: 1px; line-height: .1;"> Your task is to decide which of the two bottom textures (left or right) appears most similar to the reference texture on top. </p>
+            <br>
+            <br>
+            <p style="font-size: 24px; margin-bottom: 1px; line-height: .1;"> If you think the LEFT texture appears more similar to the reference texture, press the LEFT ARROW KEY. </p>
+            <p style="font-size: 24px; margin-bottom: 1px; line-height: .1;"> If you think the RIGHT texture appears more similar to the reference texture, press the RIGHT ARROW KEY. </p>
+            <br>
+            <br>
+            <img src="instructions.svg" style="height: 400px; margin-top: 20px;" />
+            <br>
+            <br>
+            <p style="font-size: 24px; margin-bottom: 1px; line-height: .1;"> This task will take about 5 minutes to complete. </p>
+            <br>
+            <p style="font-size: 24px; margin-bottom: 1px; line-height: .1;"> We are interested in your initial impression so please use your first intutition. </p>
+            <br>
+            <p style="font-size: 24px; margin-bottom: 1px; line-height: .1;"> If you have any questions, please ask them now, otherwise you may press the left or right arrow key to begin. </p>
+
+
+            </div>
+            `
+    };
+
+    timeline.push(instructions);
+
     // Main task trials
     var trials = randomized_stimuli.map(stimulus => {
         return {
@@ -126,13 +155,14 @@
                 <object type="image/svg+xml" data="${stimulus}" style="height:600px;"></object>
             </div>
         `,*/
+            //adjust size of stimuli here depending on monitor size
             stimulus: `
   <div style="text-align: center;">
-    <img src="${stimulus}" style="height:600px;" />
+    <img src="${stimulus}" style="height:600px;" /> 
   </div>
 `,
             choices: ['ArrowLeft', 'ArrowRight'],
-            prompt: "<p>Press the left or right arrow key.</p>",
+            prompt: "",
             data: {
                 condition: condition_name,
                 stimulus: stimulus
