@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Triplet Embeddings: Textures</title>
+    <script src="https://unpkg.com/jspsych@7.3.4"></script>
+    <link href="https://unpkg.com/jspsych@7.3.4/css/jspsych.css" rel="stylesheet" type="text/css" />
+
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2.0.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-image-keyboard-response@1.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-fullscreen@1.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-multi-select@1.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-text@1.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-button-response@1.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-call-function@1.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-preload@1.1.0"></script>
+    <script src="https://unpkg.com/@jspsych-contrib/plugin-pipe"></script>
+
+    <style>
+    </style>
+</head>
+
+<body>
+</body>
+<script>
+
+    //init jsPsych and set up
+    var jsPsych = initJsPsych({
+        show_progress_bar: false,
+        on_data_update: function () {
+            jsPsych.data.addProperties({ worker_id: urlvar.workerId });
+            timeline.push(save_data);
+        },
+        on_finish: function () {
+            jsPsych.data.addProperties({ worker_id: urlvar.workerId });
+            //jsPsych.data.get().localSave("csv", filename);
+            timeline.push(save_data);
+        },
+        max_load_time: 120000,
+    });
+
+    // Create timeline variable //
+    var timeline = [];
+
+    // Set background color to gray //
+    document.body.style.backgroundColor = "rgb(128,128,128)"
+
+    //random IDs for file names
+    const subject_id = jsPsych.randomization.randomID(10);
+    const filename = `${subject_id}.csv`;
+
+    var urlvar = jsPsych.data.urlVariables();
+
+    timeline.push({
+        type: jsPsychFullscreen,
+        fullscreen_mode: true,
+    });
+
+    //let condition;
+    //let selected_stimuli;
+    //let stimuli_timeline_variables;
+
+    const filled_stimuli = [
+        "stimuli/1_outline_zoom_left_fill.svg", "stimuli/1_outline_zoom_right_fill.svg",
+        "stimuli/2_outline_zoom_left_fill.svg", "stimuli/2_outline_zoom_right_fill.svg",
+        "stimuli/3_outline_zoom_left_fill.svg", "stimuli/3_outline_zoom_right_fill.svg",
+        "stimuli/4_outline_zoom_left_fill.svg", "stimuli/4_outline_zoom_right_fill.svg",
+        "stimuli/5_outline_zoom_left_fill.svg", "stimuli/5_outline_zoom_right_fill.svg",
+        "stimuli/6_outline_zoom_left_fill.svg", "stimuli/6_outline_zoom_right_fill.svg"
+    ]
+
+    const unfilled_stimuli = [
+        "stimuli/1_outline_zoom_left_unfill.svg", "stimuli/1_outline_zoom_right_unfill.svg",
+        "stimuli/2_outline_zoom_left_unfill.svg", "stimuli/2_outline_zoom_right_unfill.svg",
+        "stimuli/3_outline_zoom_left_unfill.svg", "stimuli/3_outline_zoom_right_unfill.svg",
+        "stimuli/4_outline_zoom_left_unfill.svg", "stimuli/4_outline_zoom_right_unfill.svg",
+        "stimuli/5_outline_zoom_left_unfill.svg", "stimuli/5_outline_zoom_right_unfill.svg",
+        "stimuli/6_outline_zoom_left_unfill.svg", "stimuli/6_outline_zoom_right_unfill.svg"
+    ]
+
+    // Prompt for participant ID
+    var participant_id = prompt("Please enter the participant ID:");
+
+    // Ensure input is valid
+    if (!participant_id || isNaN(participant_id)) {
+        alert("Invalid participant ID! Please reload the page and enter a numeric ID.");
+        throw new Error("Invalid participant ID.");
+    }
+
+    // Calculate the condition index based on participant ID (0 for filled, 1 for unfilled)
+    var condition_index = parseInt(participant_id) % 2;
+
+    // Assign the correct condition based on the condition index
+    var selected_stimuli;
+    var condition_name;
+    if (condition_index === 0) {
+        selected_stimuli = filled_stimuli;
+        condition_name = "filled";
+    } else {
+        selected_stimuli = unfilled_stimuli;
+        condition_name = "unfilled";
+    }
+
+    // Randomize the stimuli order
+    var randomized_stimuli = jsPsych.randomization.shuffle(selected_stimuli);
+
+    // Add participant ID and list name to data
+    jsPsych.data.addProperties({
+        participant_id: participant_id,
+        condition_name: condition_name
+    });
+
+    // Preload selected stimuli
+    timeline.push({
+        type: jsPsychPreload,
+        images: randomized_stimuli
+    });
+
+    // Main task trials
+    var trials = randomized_stimuli.map(stimulus => {
+        return {
+            type: jsPsychImageKeyboardResponse,
+            stimulus: stimulus,
+            choices: ['ArrowLeft', 'ArrowRight'],
+            prompt: "<p>Press the left or right arrow key.</p>",
+            data: {
+                condition: condition_name,
+                stimulus: stimulus
+            }
+        };
+    });
+
+    timeline = timeline.concat(trials);
+
+
+    const save_data = {
+        type: jsPsychPipe,
+        action: "save",
+        experiment_id: "JlELTe7cri0J",
+        filename: filename,
+        wait_message: 'Please wait a moment while the next page loads.',
+        data_string: () => jsPsych.data.get().csv(),
+        on_finish: (data) => {
+            console.log("Data saved:", data);
+        },
+        on_load: () => console.log("Attempting to save data..."),
+        on_error: (error) => console.error("Error during data save:", error)
+    };
+
+
+    /* ---------------------------------- End of main experiment ---------------------------------------- */
+
+    //Exit fullscreen
+    timeline.push({
+        type: jsPsychFullscreen,
+        fullscreen_mode: false
+    })
+
+    //Assign index values to the trials once they are all in the timeline
+    /*timeline.forEach(function (trial, index) {
+        trial.index = index;  // Assign an index to each trial
+    });*/
+
+    timeline.push(save_data);
+
+    const thank_you = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: "<p>Thank you for participating!"
+    };
+
+    timeline.push(thank_you);
+
+    // Run the experiment with the wrapped timeline
+    jsPsych.run(timeline);
+
+</script>
+
+</html>
