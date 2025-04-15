@@ -121,11 +121,16 @@
         return {
             type: jsPsychHtmlKeyboardResponse,
             //stimulus: stimulus,
-            stimulus: `
+            /*stimulus: `
             <div style="text-align: center;">
-                <object type="image/svg+xml" data="${stimulus}" style="height:300px;"></object>
+                <object type="image/svg+xml" data="${stimulus}" style="height:600px;"></object>
             </div>
-        `,
+        `,*/
+            stimulus: `
+  <div style="text-align: center;">
+    <img src="${stimulus}" style="height:600px;" />
+  </div>
+`,
             choices: ['ArrowLeft', 'ArrowRight'],
             prompt: "<p>Press the left or right arrow key.</p>",
             data: {
