@@ -78,6 +78,15 @@
         "stimuli/6_outline_zoom_left_unfill.svg", "stimuli/6_outline_zoom_right_unfill.svg"
     ]
 
+    const unfilled_scaled = [
+        "stimuli/1_OutLnScl_zoom_left_unfill.svg", "stimuli/1_OutLnScl_zoom_right_unfill.svg",
+        "stimuli/2_OutLnScl_zoom_left_unfill.svg", "stimuli/2_OutLnScl_zoom_right_unfill.svg",
+        "stimuli/3_OutLnScl_zoom_left_unfill.svg", "stimuli/3_OutLnScl_zoom_right_unfill.svg",
+        "stimuli/4_OutLnScl_zoom_left_unfill.svg", "stimuli/4_OutLnScl_zoom_right_unfill.svg",
+        "stimuli/5_OutLnScl_zoom_left_unfill.svg", "stimuli/5_OutLnScl_zoom_right_unfill.svg",
+        "stimuli/6_OutLnScl_zoom_left_unfill.svg", "stimuli/6_OutLnScl_zoom_right_unfill.svg"
+    ]
+
     // Prompt for participant ID
     var participant_id = prompt("Please enter the participant ID:");
 
@@ -87,8 +96,11 @@
         throw new Error("Invalid participant ID.");
     }
 
+    console.log("Participant ID:", participant_id);
     // Calculate the condition index based on participant ID (0 for filled, 1 for unfilled)
-    var condition_index = parseInt(participant_id) % 2;
+    var condition_index = parseInt(participant_id) % 3;
+    console.log("Condition index:", condition_index);
+
 
     // Assign the correct condition based on the condition index
     var selected_stimuli;
@@ -96,9 +108,12 @@
     if (condition_index === 0) {
         selected_stimuli = filled_stimuli;
         condition_name = "filled";
-    } else {
+    } else if (condition_index == 1) {
         selected_stimuli = unfilled_stimuli;
         condition_name = "unfilled";
+    } else {
+        selected_stimuli = unfilled_scaled;
+        condition_name = "unfilled_scaled";
     }
 
     // Randomize the stimuli order
