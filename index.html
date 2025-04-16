@@ -134,14 +134,14 @@
     var instructions = {
         type: jsPsychHtmlKeyboardResponse,
         stimulus: `<div style="text-align: center;">
-            <p style="font-size: 24px; margin-bottom: 1px; line-height: .1;"> During this experiment you will be presented with a series of textures. </p>
-            <p style="font-size: 24px; margin-bottom: 1px; line-height: .1;"> There will be one texture at the top (labeled 'reference' texture here) </p>
-            <p style="font-size: 24px; margin-bottom: 1px; line-height: .1;"> and two textures below (labeled 'left' texture and 'right' texture here). </p>
-            <p style="font-size: 24px; margin-bottom: 1px; line-height: .1;"> Your task is to decide which of the two bottom textures (left or right) appears most similar to the reference texture on top. </p>
+            <p style="font-size: 24px; margin-bottom: 1px; line-height: .1;"> During this experiment you will be presented with a series of images. </p>
+            <p style="font-size: 24px; margin-bottom: 1px; line-height: .1;"> There will be one image at the top (labeled 'reference' image here) </p>
+            <p style="font-size: 24px; margin-bottom: 1px; line-height: .1;"> and two images below (labeled 'left' image and 'right' image here). </p>
+            <p style="font-size: 24px; margin-bottom: 1px; line-height: .1;"> Your task is to decide which of the two bottom images (left or right) appears most similar to the reference image on top. </p>
             <br>
             <br>
-            <p style="font-size: 24px; margin-bottom: 1px; line-height: .1;"> If you think the LEFT texture appears more similar to the reference texture, press the LEFT ARROW KEY. </p>
-            <p style="font-size: 24px; margin-bottom: 1px; line-height: .1;"> If you think the RIGHT texture appears more similar to the reference texture, press the RIGHT ARROW KEY. </p>
+            <p style="font-size: 24px; margin-bottom: 1px; line-height: .1;"> If you think the LEFT image appears more similar to the reference image, press the LEFT ARROW KEY. </p>
+            <p style="font-size: 24px; margin-bottom: 1px; line-height: .1;"> If you think the RIGHT image appears more similar to the reference image, press the RIGHT ARROW KEY. </p>
             <br>
             <br>
             <img src="instructions.svg" style="height: 400px; margin-top: 20px;" />
@@ -178,6 +178,13 @@
 `,
             choices: ['ArrowLeft', 'ArrowRight'],
             prompt: "",
+            stimulus_duration: null,
+            response_ends_trial: true,
+            post_trial_gap: 500,
+            on_finish: function () {
+                // Manually clear the display
+                document.querySelector('#jspsych-content').innerHTML = '';
+            },
             data: {
                 condition: condition_name,
                 stimulus: stimulus
@@ -185,7 +192,57 @@
         };
     });
 
-    timeline = timeline.concat(trials);
+    var break_1 = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus:
+            "You have completed 1 of 5 blocks of trials. Please press either arrow key to continue to the next blcok when you are ready."
+    };
+
+    var break_2 = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus:
+            "You have completed 2 of 5 blocks of trials. Please press either arrow key to continue to the next blcok when you are ready."
+    };
+
+    var break_3 = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus:
+            "You have completed 3 of 5 blocks of trials. Please press either arrow key to continue to the next blcok when you are ready."
+    };
+
+    var break_4 = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus:
+            "You have completed 4 of 5 blocks of trials. Please press either arrow key to continue to the next blcok when you are ready."
+    };
+
+
+    //timeline = timeline.concat(trials);
+
+    for (let i = 0; i < 5; i++) {
+        // Add the trials for this block
+        timeline = timeline.concat(trials);
+
+        // Add a break *after* the block if it's not the last one
+        if (i < 4) {
+            let break_message;
+            switch (i) {
+                case 0:
+                    break_message = break_1;
+                    break;
+                case 1:
+                    break_message = break_2;
+                    break;
+                case 2:
+                    break_message = break_3;
+                    break;
+                case 3:
+                    break_message = break_4;
+                    break;
+            }
+            timeline.push(break_message);
+        }
+    }
 
 
     const save_data = {
